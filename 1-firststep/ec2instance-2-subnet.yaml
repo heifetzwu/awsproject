@@ -72,8 +72,10 @@ Resources:
           #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/styles.css
           #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/Dockerfile
           git clone https://github.com/heifetzwu/awsproject.git
+          cd awsproject/2-pollywebsite
+          docker build -t mynginx .
           
-          cp awsproject/2-pollywebsite/* /usr/share/nginx/html/
+          #cp awsproject/2-pollywebsite/* /usr/share/nginx/html/
           #cp * /home/ec2-user/
           #mv index.html /usr/share/nginx/html/index3.html
           #mv scripts.js /usr/share/nginx/html/scripts.js

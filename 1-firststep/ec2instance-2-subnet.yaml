@@ -66,12 +66,14 @@ Resources:
           #amazon-linux-extras install nginx1.12
           #service nginx start
           cd /home/ec2-user/
-          wget https://s3-ap-southeast-1.amazonaws.com/awsproject-0308/index2.html
-          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/index.html
-          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/scripts.js
-          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/styles.css
-          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/Dockerfile
-          cp * /usr/share/nginx/html/
+          #wget https://s3-ap-southeast-1.amazonaws.com/awsproject-0308/index2.html
+          #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/index.html
+          #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/scripts.js
+          #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/styles.css
+          #wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/Dockerfile
+          git clone https://github.com/heifetzwu/awsproject.git
+          
+          cp awsproject/2-pollywebsite/* /usr/share/nginx/html/
           #cp * /home/ec2-user/
           #mv index.html /usr/share/nginx/html/index3.html
           #mv scripts.js /usr/share/nginx/html/scripts.js

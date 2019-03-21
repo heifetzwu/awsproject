@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: awsproject remove block
+
+#Metadata:
+
+Parameters:
+  mykey:
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    Description:
+      Parameter section
+  myVpc:
+    Type: AWS::EC2::VPC::Id
+  mySubnet:
+    Type: AWS::EC2::Subnet::Id  
+  #Type: String
+  myVPCEC2SecurityGroup: 
+    Type: AWS::EC2::SecurityGroup::Id  
+
+#Mappings:
+
+
+Resources:
+  MyEC2Instance: #An inline comment
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: "ami-085fd1bd447be68e8" #Another comment -- This is a Linux AMI
+      InstanceType: t2.micro
+      KeyName: 
+        Ref: mykey
+      #SecurityGroups:
+      #  - Ref: ServerSecurityGroup
+      Tags:
+        - 
+          Key: Schema
+          Value: awsproject
+      #VpcId: !Ref myVpc
+      #SubnetId: !Ref mySubnet
+      NetworkInterfaces:
+        -
+          AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet: 
+            - Ref: myVPCEC2SecurityGroup
+          SubnetId: !Ref mySubnet
+      UserData:
+        Fn::Base64: !Sub |
+          #!bin/bash -xe
+          yum update -y
+          yum install  -y git docker
+          service docker start
+          usermod -a -G docker ec2-user
+          KUBECTL_BIN="kubectl"
+          echo $KUBECTL_BIN
+          function install_kubectl {
+            if [ -z $(which $KUBECTL_BIN) ]
+              then
+                curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/$KUBECTL_BIN
+                chmod +x $KUBECTL_BIN
+                sudo mv $KUBECTL_BIN /usr/local/bin/$KUBECTL_BIN
+            else
+              echo "Kubectl is most likely installed"                
+            fi
+          }
+          install_kubectl
+          #amazon-linux-extras install nginx1.12
+          #service nginx start
+          cd /home/ec2-user/
+          wget https://s3-ap-southeast-1.amazonaws.com/awsproject-0308/index2.html
+          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/index.html
+          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/scripts.js
+          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/styles.css
+          wget http://jackpollywebsite3.s3-website-ap-southeast-1.amazonaws.com/Dockerfile
+          cp * /usr/share/nginx/html/
+          #cp * /home/ec2-user/
+          #mv index.html /usr/share/nginx/html/index3.html
+          #mv scripts.js /usr/share/nginx/html/scripts.js
+          #mv styles.css /usr/share/nginx/html/styles.css
+          
+  ServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: allow connections from specified CIDR ranges
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+Outputs:
+  Demo:
+    Value: test output
+  
